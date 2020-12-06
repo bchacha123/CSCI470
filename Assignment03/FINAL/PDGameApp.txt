@@ -1,0 +1,247 @@
+/*
+ 	Programmer: Brayan Chacha Gonzalez (Z1861700) 
+ 	    Course: CSCI 470, Programming in Java
+ 	Assignment: Assingment03 
+ 	  Due Date: 09/30/20
+ 	  
+ 	Class Name: PDGameApp
+ 				This class provides an interface for user input. 
+ 				Within the main() method you will need a Scanner
+ 				to retrieve the input from the console, a PDGame 
+ 				object that will control the play of each game, 
+ 				and a HashMap to store the GameStat objects from 
+ 				each PDGame.
+			
+				FINAL REVISED COPY
+*/ 
+
+package pdgameapp;
+import java.util.Scanner;
+import java.util.HashMap;
+import java.util.Date;
+import java.util.ArrayList;
+import java.util.ListIterator;
+import java.util.InputMismatchException;
+import java.util.Set;
+
+public class PDGameApp
+{
+	public static void main(String[] args)
+	{
+		//Boolean variable set to true will need for validity loop
+		boolean play = true;
+		
+		//final String -> CANT CHANGE THE NAME OF FILE IN PACKAGE
+		final String file1 = "input.txt";
+		
+		//A game consists of 5 rounds of play
+		final int numRounds = 5;
+		
+		//Variable for the strategy the User will pick
+		int userStrategy = 0;
+
+		//Variable for the decision the User will decide (1 or 2)
+		int userDesicion = 0;
+
+
+		//Scanner object to scan ASCII characters to read console in
+		Scanner scan1 = new Scanner(System.in);
+		
+		//Declaring a HashMap which will store the info of the game
+		//Key is String, object pointer to GameStat
+		HashMap<String, GameStat> hashMap1 = new HashMap<>();
+		
+		//Printing header to User 
+		System.out.println("***Starting A Session of Prisoner's Dilemma ***-3 rounds in this version of game" + "\n");
+		
+		//Assuming User wants to play... keep spinning, validity loop
+		while(play)
+		{
+			//Creating current time(date) and converting it to String(key) 
+			String current_time = (new Date()).toString();
+			
+			//Pointer to file 
+			PDGame pd1 = new PDGame(file1); 
+			
+			//Printing strategies for the computer 
+			System.out.println("--HERE ARE STRATEGIES AVAILABLE FOR THE COMPUTER" + "\n");
+			
+			//Calling the computer strategies from PDGame ERROR!!!!!!!! UNTIL ITS DEFINE!!!!!!!!  
+			ArrayList<String> Computer_Strategies = pd1.getStrategies(); 
+			
+			//Creating an iterator that will display the entity of the content of the HashMap
+			ListIterator<String> iter = Computer_Strategies.listIterator();
+			
+			//Count content of what the ArrayList holds			
+			int i = 1;
+			//Loop, that will go through the ListIterator and count the content 
+			while(iter.hasNext())
+			{
+				//num returning the next token from the scanner 
+				String num = iter.next();
+				
+				//Displaying to User Output 
+				System.out.println("   "+ i + "." + num);
+				
+				//Increment 
+				i++;
+			}//End ListIterator
+			
+			System.out.println("\r\n" + "\r\n" + "\r\n" + "Select a strategy from above for the Computer to use in the " 
+								+ numRounds + " rounds:");
+			
+			//Boolean variable flag set to true
+			boolean onStrategy = true;
+			
+			//Assuming User entered a strategy -> try and catch <-
+			while(onStrategy) 
+			{  
+                try {
+                	
+					//Convert the String int to numeric integer 
+					userStrategy = scan1.nextInt();
+					
+					//Check the range of what the User entered
+					//if(userStrategy >=1 || userStrategy <= 3)
+					if(userStrategy >= 1 && userStrategy <= 3) 
+					{
+						
+					//Valid value entered 
+					onStrategy = false;
+
+                    } else { 
+                    	
+                    	//Error message, asking the User to try again
+						System.out.println("Invalid value, value must be between 1 and 3. Try again!");	
+                    }
+
+				//If User enters something that isn't a number, display Error Message 	
+                } catch (InputMismatchException e) { 
+                	
+                		System.out.println("Invalid value, value must be between 1 and 3. Try again!");	
+                    
+                		//Clearing buffer
+                		scan1.nextLine();  
+                }//End catch 
+
+            }//End onStrategy loop
+			
+			//“set” it within the PDGame object, ERROR UNTIL ITS DEFINE IN PDGAME 
+			pd1.setStrategy(userStrategy);
+			
+			//Variable for number of rounds 
+			int index = 0;
+
+			while(index < numRounds)
+			{
+				//Displaying Menu to user, decision User will decide 
+				System.out.println(" BEGIN A ROUND - Here are your 2 choices");
+				System.out.println("  1. Remain silent.");
+				System.out.println("  2. Betray and testify against." + "\n");
+				System.out.println(" ----What is your decision this round?");
+				
+				//Boolean variable flag set to true 
+				boolean onDesicion = true;
+				//Assuming User entered a decision -> try and catch <-
+				while(onDesicion) {
+					//Checking User input data 
+					try {
+						
+						//Conversion to string int to numeric integer
+						userDesicion = scan1.nextInt();
+						
+						//If User input is 1 or 2 then the input data is correct! 
+						if(userDesicion == 1 || userDesicion == 2) {
+							//Turn flag off 
+							onDesicion = false;
+							
+						} else {
+							//Display Error message to User 
+							System.out.println("Invalid value. Choose 1 or 2, try again!");
+			
+						}
+						
+					} catch (InputMismatchException e) { 
+                	
+						//Display message to user 
+                		System.out.println("Invalid value, value must be 1 or 2. Try again!");	
+                    
+                		//Clearing buffer
+                		scan1.nextLine();
+                	}
+				}//End onDeisicion 
+					
+					//Returning the results of each round, WILL GET ERROR NOT DEFINE YET!!  
+					String Round_Results = pd1.playRound(userDesicion);
+					
+					//Display to User
+					System.out.println(Round_Results);
+					
+					//Increment 
+					index++;
+					
+			  }//End while index < numRounds
+				
+				//Display to User Game Over 
+				System.out.println(" END OF ROUNDS, GAME OVER  --");
+				
+				//Display to User sentence for User and Computer, coming from PDGame
+				//WILL GET ERROR NOT DEFINE YET!!!!!!!!
+				System.out.println(pd1.getScores());
+				
+				GameStat gamestat;
+				
+				//Get the GameStat obj
+				//WILL GET ERROR, NOT DEFINE!!!!!!!!!
+				gamestat = pd1.getStat();
+				
+				//Refresh the HashMap
+				hashMap1.put(current_time, gamestat);
+				
+				//Ask the User if he wants to play again
+				System.out.println(" --Would you like to play another game in this session (y/n)?");
+				
+				//Play_Again returning the next token from the scanner
+				String Play_Again = scan1.next();
+								
+				//Assuming User types Y, n, N, n
+				while((!Play_Again.equalsIgnoreCase("y")) && (!Play_Again.equalsIgnoreCase("n")))
+				{
+					//Display decision to User 
+					System.out.println("Choose either y or n");
+					
+					//Taking token from User 
+					Play_Again = scan1.next();
+
+				}//End Play_Again
+				
+				//If User enters N or n
+				if(Play_Again.equalsIgnoreCase("n"))
+				{
+					//Turn flag off 
+					play = false;
+				}
+				
+		}//End play
+		
+		//Displaying the Summary of the Games
+		System.out.println("\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
+		System.out.println(" -  	 Summnary of games and sessoin times:                   -");
+		System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n");
+		
+		//Getting the keyset of HashMap in Set
+		Set<String> keySet = hashMap1.keySet();
+		
+		//For loop that will display every GameStat, 
+		// WILL GET ERROR HASHMAP NOT DEFINE YET!!! 
+		for(String searchKey : keySet) 
+		{
+			GameStat result_status = hashMap1.get(searchKey);
+			
+			//Summary to User 
+			System.out.println(searchKey + " \nWinner is--" + result_status.getWinner() + " The computer used " + result_status.getCompStrategy() + "\n");
+		}
+		scan1.close();
+	}//End of Main 
+	
+} //End of PDGameApp
